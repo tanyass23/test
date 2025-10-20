@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Вікторина: Показникові рівняння</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      h1 {
+        text-align: center;
+        color: #667eea;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 1.1em;
+      }
+
+      .quiz-section {
+        margin-bottom: 40px;
+      }
+
+      .question {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        border-left: 5px solid #667eea;
+        transition: transform 0.2s;
+      }
+
+      .question:hover {
+        transform: translateX(5px);
+      }
+
+      .question-text {
+        font-size: 1.2em;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .option {
+        background: white;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 1.05em;
+        display: block;
+      }
+
+      .option:hover {
+        border-color: #667eea;
+        transform: scale(1.02);
+      }
+
+      .option input[type="radio"] {
+        margin-right: 10px;
+        cursor: pointer;
+      }
+
+      .option.correct {
+        background: #d4edda;
+        border-color: #28a745;
+      }
+
+      .option.incorrect {
+        background: #f8d7da;
+        border-color: #dc3545;
+      }
+
+      .section-title {
+        font-size: 1.8em;
+        color: #764ba2;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #667eea;
+      }
+
+      .input-answer {
+        margin-top: 15px;
+      }
+
+      .input-answer input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1.1em;
+        transition: border-color 0.3s;
+      }
+
+      .input-answer input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .hint {
+        color: #666;
+        font-style: italic;
+        font-size: 0.9em;
+        margin-top: 5px;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.2em;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: transform 0.3s;
+        display: block;
+        margin: 30px auto;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+      }
+
+      .btn:active {
+        transform: translateY(-1px);
+      }
+
+      .result {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        font-size: 1.5em;
+        margin-top: 30px;
+        display: none;
+      }
+
+      .result.show {
+        display: block;
+        animation: slideIn 0.5s;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .score-emoji {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: 1.8em;
+        }
+
+        .question-text {
+          font-size: 1em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🏔️ Вікторина: Покори вершину показникових рівнянь!</h1>
+      <p class="subtitle">Перевір свої знання з показникових рівнянь</p>
+
+      <div
+        style="
+          background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+          padding: 25px;
+          border-radius: 15px;
+          margin-bottom: 30px;
+          border-left: 5px solid #667eea;
+        "
+      >
+        <h3 style="color: #333; margin-bottom: 15px; font-size: 1.3em">
+          📚 Вітаємо, дослідникe математики!
+        </h3>
+        <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+          Показникові рівняння — це рівняння, в яких невідоме
+          <strong>x</strong> знаходиться в показнику степеня. Щоб їх розв'язати,
+          потрібно вміти працювати з властивостями степенів та зводити вирази до
+          однакових основ.
+        </p>
+        <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+          Ця вікторина складається з <strong>двох частин</strong>:
+        </p>
+        <ul style="color: #555; margin-left: 20px; line-height: 1.8">
+          <li>
+            <strong>Частина 1</strong> — 10 теоретичних питань з варіантами
+            відповідей
+          </li>
+          <li>
+            <strong>Частина 2</strong> — 10 практичних завдань, де потрібно
+            ввести числову відповідь
+          </li>
+        </ul>
+        <p style="color: #555; line-height: 1.8; margin-top: 15px">
+          💡 <strong>Підказка:</strong> Пам'ятай основні властивості:
+          <em>a<sup>x</sup> = a<sup>y</sup></em> означає <em>x = y</em>, а
+          будь-яке число в нульовому степені дорівнює 1.
+        </p>
+        <p
+          style="
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 15px;
+            text-align: center;
+          "
+        >
+          Успіху! Час показати свої знання! 🚀
+        </p>
+      </div>
+
+      <form id="quizForm">
+        <div class="quiz-section">
+          <h2 class="section-title">Частина 1: Теоретичні питання</h2>
+
+          <div class="question">
+            <div class="question-text">1. Що таке показникове рівняння?</div>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q1" value="А" />
+                А) Рівняння, де змінна в знаменнику
+              </label>
+              <label class="option">
+                <input type="radio" name="q1" value="Б" />
+                Б) Рівняння, де змінна в показнику степеня
+              </label>
+              <label class="option">
+                <input type="radio" name="q1" value="В" />
+                В) Рівняння другого степеня
+              </label>
+              <label class="option">
+                <input type="radio" name="q1" value="Г" />
+                Г) Лінійне рівняння
+              </label>
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">2. Розв'яжи рівняння: \(2^x = 8\)</div>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q2" value="А" />А) 1</label
+              >
+              <label class="option">
+                <input type="radio" name="q2" value="Б" />Б) 2</label
+              >
+              <label class="option">
+                <input type="radio" name="q2" value="В" />В) 3</label
+              >
+              <label class="option">
+                <input type="radio" name="q2" value="Г" />Г) 4</label
+              >
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">
+              3. Розв'яжи рівняння: \(5^{x+1} = 25\)
+            </div>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q3" value="А" />А) 1</label
+              >
+              <label class="option">
+                <input type="radio" name="q3" value="Б" />Б) 2</label
+              >
+              <label class="option">
+                <input type="radio" name="q3" value="В" />В) 3</label
+              >
+              <label class="option">
+                <input type="radio" name="q3" value="Г" />Г) 0</label
+              >
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">4. Знайди х: \(3^x = 1\)</div>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q4" value="А" />А) 0</label
+              >
+              <label class="option">
+                <input type="radio" name="q4" value="Б" />Б) 1</label
+              >
+              <label class="option">
+                <input type="radio" name="q4" value="В" />В) 3</label
+              >
+              <label class="option">
+                <input type="radio" name="q4" value="Г" />Г) -1</label
+              >
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">5. Яке з рівнянь є показниковим?</div>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q5" value="А" />А) \(x^2 = 16\)</label
+              >
+              <label class="option">
+                <input type="radio" name="q5" value="Б" />Б) \(\log x =
+                2\)</label
+              >
+              <label class="option">
+                <input type="radio" name="q5" value="В" />В) \(2^x =
+                x^2\)</label
+              >
+              <label class="option">
+                <input type="radio" name="q5" value="Г" />Г) \(x + 5 =
+                0\)</label
+              >
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">
+              6. Розв'яжи рівняння: \(4^x = 2^{x+2}\)
+            </div>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q6" value="А" />А) 1</label
+              >
+              <label class="option">
+                <input type="radio" name="q6" value="Б" />Б) 2</label
+              >
+              <label class="option">
+                <input type="radio" name="q6" value="В" />В) 3</label
+              >
+              <label class="option">
+                <input type="radio" name="q6" value="Г" />Г) 4</label
+              >
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">
+              7. Розв'яжи рівняння: \(3^{2x} = 27\)
+            </div>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q7" value="А" />А) 1</label
+              >
+              <label class="option">
+                <input type="radio" name="q7" value="Б" />Б) 2</label
+              >
+              <label class="option">
+                <input type="radio" name="q7" value="В" />В) 2,5</label
+              >
+              <label class="option">
+                <input type="radio" name="q7" value="Г" />Г) 3</label
+              >
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">
+              8. Розв'яжи рівняння: \(7^{x+2} = 343\)
+            </div>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q8" value="А" />А) 1</label
+              >
+              <label class="option">
+                <input type="radio" name="q8" value="Б" />Б) 2</label
+              >
+              <label class="option">
+                <input type="radio" name="q8" value="В" />В) 3</label
+              >
+              <label class="option">
+                <input type="radio" name="q8" value="Г" />Г) 4</label
+              >
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">9. Розв'яжи рівняння: \(9^x = 27\)</div>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q9" value="А" />А)
+                \(\frac{3}{2}\)</label
+              >
+              <label class="option">
+                <input type="radio" name="q9" value="Б" />Б)
+                \(\frac{2}{3}\)</label
+              >
+              <label class="option">
+                <input type="radio" name="q9" value="В" />В)
+                \(\frac{1}{2}\)</label
+              >
+              <label class="option">
+                <input type="radio" name="q9" value="Г" />Г)
+                \(\frac{3}{4}\)</label
+              >
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">
+              10. Яке з тверджень вірне для будь-якого показникового рівняння
+              виду \(a^x = a^y\), де \(a > 0\), \(a \ne 1\)?
+            </div>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q10" value="А" />А) \(x + y =
+                0\)</label
+              >
+              <label class="option">
+                <input type="radio" name="q10" value="Б" />Б) \(x = y\)</label
+              >
+              <label class="option">
+                <input type="radio" name="q10" value="В" />В) \(x \cdot y =
+                1\)</label
+              >
+              <label class="option">
+                <input type="radio" name="q10" value="Г" />Г) \(x = -y\)</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-section">
+          <h2 class="section-title">🔥 Частина 2: Практична вікторина</h2>
+          <p class="subtitle" style="margin-bottom: 20px">
+            Розв'яжи кожне рівняння і запиши значення x
+          </p>
+
+          <div class="question">
+            <div class="question-text">11. Розв'яжи: \(2^x = 16\)</div>
+            <div class="input-answer">
+              <input type="text" name="q11" placeholder="Введи відповідь" />
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">12. Розв'яжи: \(3^{2x} = 81\)</div>
+            <div class="input-answer">
+              <input type="text" name="q12" placeholder="Введи відповідь" />
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">13. Розв'яжи: \(5^{x-1} = 25\)</div>
+            <div class="input-answer">
+              <input type="text" name="q13" placeholder="Введи відповідь" />
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">14. Розв'яжи: \(4^x = 8\)</div>
+            <div class="hint">
+              Підказка: вирази обидві сторони з однаковою основою
+            </div>
+            <div class="input-answer">
+              <input
+                type="text"
+                name="q14"
+                placeholder="Введи відповідь (наприклад: 1.5 або 3/2)"
+              />
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">
+              15. Розв'яжи: \(7^{x+1} = 49 \cdot 7\)
+            </div>
+            <div class="input-answer">
+              <input type="text" name="q15" placeholder="Введи відповідь" />
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">16. Розв'яжи: \(10^{2x-1} = 1000\)</div>
+            <div class="input-answer">
+              <input type="text" name="q16" placeholder="Введи відповідь" />
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">
+              17. Розв'яжи: \(2^{x+2} = \frac{1}{4}\)
+            </div>
+            <div class="input-answer">
+              <input type="text" name="q17" placeholder="Введи відповідь" />
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">18. Розв'яжи: \(3^{x+1} = 9^{x-2}\)</div>
+            <div class="hint">Підказка: \(9 = 3^2\)</div>
+            <div class="input-answer">
+              <input type="text" name="q18" placeholder="Введи відповідь" />
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">
+              19. Розв'яжи: \(2^{x+1} + 2^x = 48\)
+            </div>
+            <div class="input-answer">
+              <input type="text" name="q19" placeholder="Введи відповідь" />
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-text">
+              20. Розв'яжи: \(5^x = 2 \cdot 5^{x-1}\)
+            </div>
+            <div class="input-answer">
+              <input type="text" name="q20" placeholder="Введи відповідь" />
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn" onclick="checkAnswers()">
+          Перевірити відповіді 🎯
+        </button>
+      </form>
+
+      <div class="result" id="result"></div>
+    </div>
+
+    <script>
+      const answers = {
+        q1: "Б",
+        q2: "В",
+        q3: "А",
+        q4: "А",
+        q5: "В",
+        q6: "Б",
+        q7: "А",
+        q8: "А",
+        q9: "А",
+        q10: "Б",
+        q11: "4",
+        q12: "2",
+        q13: "3",
+        q14: ["1.5", "3/2", "1,5"],
+        q15: "2",
+        q16: "2",
+        q17: "-4",
+        q18: "5",
+        q19: "4",
+        q20: "1",
+      };
+
+      function checkAnswers() {
+        let score = 0;
+        const form = document.getElementById("quizForm");
+
+        for (let i = 1; i <= 10; i++) {
+          const selected = form.elements["q" + i].value;
+          const options = document.querySelectorAll('input[name="q' + i + '"]');
+
+          options.forEach((option) => {
+            const label = option.parentElement;
+            label.classList.remove("correct", "incorrect");
+
+            if (option.value === answers["q" + i]) {
+              label.classList.add("correct");
+            }
+
+            if (
+              selected &&
+              option.checked &&
+              option.value !== answers["q" + i]
+            ) {
+              label.classList.add("incorrect");
+            }
+          });
+
+          if (selected === answers["q" + i]) {
+            score++;
+          }
+        }
+
+        for (let i = 11; i <= 20; i++) {
+          const userAnswer = form.elements["q" + i].value.trim();
+          const input = form.elements["q" + i];
+
+          let isCorrect = false;
+
+          if (Array.isArray(answers["q" + i])) {
+            isCorrect = answers["q" + i].includes(userAnswer);
+          } else {
+            isCorrect = userAnswer === answers["q" + i];
+          }
+
+          if (isCorrect) {
+            score++;
+            input.style.borderColor = "#28a745";
+            input.style.background = "#d4edda";
+          } else if (userAnswer) {
+            input.style.borderColor = "#dc3545";
+            input.style.background = "#f8d7da";
+          }
+        }
+
+        const resultDiv = document.getElementById("result");
+        let emoji = "";
+        let message = "";
+
+        if (score >= 18) {
+          emoji = "🏆";
+          message = "Вітаємо! Ти справжній майстер показникових рівнянь!";
+        } else if (score >= 15) {
+          emoji = "🌟";
+          message = "Чудовий результат! Ти добре розумієш тему!";
+        } else if (score >= 10) {
+          emoji = "👍";
+          message = "Добре! Ще трохи практики і буде ідеально!";
+        } else {
+          emoji = "💪";
+          message = "Продовжуй навчатися! У тебе все вийде!";
+        }
+
+        resultDiv.innerHTML =
+          '<div class="score-emoji">' +
+          emoji +
+          "</div><div>Твій результат: " +
+          score +
+          ' з 20</div><div style="font-size: 0.8em; margin-top: 10px;">' +
+          message +
+          "</div>";
+        resultDiv.classList.add("show");
+        resultDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    </script>
+  </body>
+</html>
